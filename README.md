@@ -1,6 +1,13 @@
 # CAT language compiler
 
-## automata-compiler
+## Installation and Usage
+
+clone the repository:
+
+```bash
+git clone https://github.com/CastDev-j/automata-compiler.git
+cd automata-compiler
+```
 
 To install dependencies:
 
