@@ -2,6 +2,10 @@
 
 ## Installation and Usage
 
+Requirements:
+
+- [Bun](https://bun.sh/)
+
 clone the repository:
 
 ```bash
