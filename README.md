@@ -14,6 +14,12 @@ To run:
 bun run dev
 ```
 
+Run tests:
+
+```bash
+bun test
+```
+
 ## Structure (cambiar para el miercoles)
 
 automata-compiler/
