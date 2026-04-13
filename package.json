@@ -1,0 +1,17 @@
+{
+  "name": "automata-compiler",
+  "module": "app/index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "bun run --watch app/index.ts",
+    "test": "bun test"
+  }
+}
