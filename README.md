@@ -16,38 +16,23 @@ cd automata-compiler
 To install dependencies:
 
 ```bash
+// Install dependencies
+
 bun install
 ```
 
 To run:
 
 ```bash
+// Run the development server by default it will tokenize the file app/examples/demo.cat and print the tokens in the console
+
 bun run dev
 ```
 
 Run tests:
 
 ```bash
+// Run tests of the entire language
+
 bun test
 ```
-
-## Structure (cambiar para el miercoles)
-
-automata-compiler/
-├── app/
-│ ├── compiler/
-│ │ ├── lexer.ts # Análisis léxico
-│ │ ├── parser.ts # Análisis sintáctico
-│ │ ├── ast.ts # Definiciones del AST
-│ │ ├── checker.ts # Análisis semántico (opcional)
-│ │ └── codegen.ts # Generación de código
-│ ├── tests/
-│ │ ├── lexer.test.ts
-│ │ ├── parser.test.ts
-│ │ └── integration.test.ts
-│ ├── examples/
-│ │ └── demo.cat
-│ └── index.ts # Punto de entrada (orquesta todo)
-├── package.json
-├── tsconfig.json
-└── README.md
