@@ -22,15 +22,15 @@ const tokenTable: Record<number, { token: number; word: string }> = {
   45: { token: 1110, word: "interface" },
   54: { token: 1120, word: "let" },
   57: { token: 1130, word: "log" },
-  60: { token: 1040, word: "console" }, // continuacion de console
+  60: { token: 1040, word: "console" },
   64: { token: 1140, word: "of" },
   66: { token: 1150, word: "push" },
   70: { token: 1160, word: "return" },
-  76: { token: 1070, word: "do" }, // duplicado para do
+  76: { token: 1070, word: "do" },
   78: { token: 1170, word: "switch" },
   84: { token: 1180, word: "type" },
   88: { token: 1190, word: "var" },
-  91: { token: 1100, word: "if" }, // duplicado para if
+  91: { token: 1100, word: "if" },
   93: { token: 1200, word: "while" },
 
   // Operadores (2000-2200)
@@ -1307,7 +1307,7 @@ class Tokenizer {
     while (i < n) {
       const currentChar = input[i] ?? "";
 
-      // Saltar espacios y saltos de línea
+      //! Saltar espacios y saltos de línea
       if (/\s/.test(currentChar)) {
         i++;
         continue;
@@ -1410,7 +1410,7 @@ class Tokenizer {
             ? this.spaceColumnIndex
             : undefined);
 
-        // Si el carácter no está en el alfabeto, error
+        //! Error caracteres no definidos
         if (colIndex === undefined) {
           if (lexeme.length === 0) {
             throw new Error(
@@ -1437,7 +1437,7 @@ class Tokenizer {
 
         const nextRow = currentTransitions[colIndex] ?? 0;
 
-        // Si es un token válido (valor negativo)
+        //? Capturar y grabar token válido
         if (nextRow < 0) {
           const tokenCode = Math.trunc(Math.abs(nextRow));
           const tokenInfo = tokenByCode[tokenCode] ?? tokenTable[currentRow];
@@ -1449,7 +1449,7 @@ class Tokenizer {
           }
         }
 
-        // Si no hay transición y no es token válido
+        //? Si no hay transición y no es token válido
         if (nextRow === 0 || nextRow === undefined) {
           break;
         }
@@ -1458,13 +1458,13 @@ class Tokenizer {
         lexeme += char;
         i++;
 
-        // Si llegamos a un estado final (valor negativo)
+        //? Si llegamos a un estado final (valor negativo)
         if (nextRow < 0) {
           break;
         }
       }
 
-      // Si encontramos un token válido
+      //? Si encontramos un token válido
       if (lastValidToken) {
         const normalizedToken = this.normalizeTokenByLexeme(
           lastValidToken,
@@ -1478,7 +1478,7 @@ class Tokenizer {
         });
         i = lastValidIndex;
       } else if (lexeme.length > 0) {
-        // Si no es token válido pero tenemos algo, podría ser ID
+        //? Si no es token válido pero tenemos algo, podría ser ID
         const firstChar = lexeme.charAt(0);
         const colIndex = charToIndex[firstChar];
         if (colIndex !== undefined) {
@@ -1508,7 +1508,7 @@ class Tokenizer {
         }
       }
 
-      // Si no avanzamos, hay un error
+      //? Si no avanzamos, hay un error
       if (lexeme === "" && i < n) {
         throw new Error(
           `Carácter no reconocido: "${input[i]}" en posición ${i}`,
