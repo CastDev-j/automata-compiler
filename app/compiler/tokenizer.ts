@@ -53,27 +53,29 @@ const tokenTable: Record<number, { token: number; word: string }> = {
   116: { token: 2160, word: "!" },
   117: { token: 2170, word: "&&" },
   118: { token: 2180, word: "||" },
+  119: { token: 2190, word: "&" },
+  120: { token: 2200, word: "|" },
 
   // Puntuación (3000-3040)
-  120: { token: 3010, word: "." },
-  121: { token: 3020, word: "," },
-  122: { token: 3030, word: ";" },
-  123: { token: 3040, word: ":" },
+  121: { token: 3010, word: "." },
+  122: { token: 3020, word: "," },
+  123: { token: 3030, word: ";" },
+  124: { token: 3040, word: ":" },
 
   // Llaves (4000-4020)
-  124: { token: 4010, word: "{" },
-  125: { token: 4020, word: "}" },
+  125: { token: 4010, word: "{" },
+  126: { token: 4020, word: "}" },
 
   // Paréntesis y corchetes (5000-5040)
-  126: { token: 5010, word: "(" },
-  127: { token: 5020, word: ")" },
-  128: { token: 5030, word: "[" },
-  129: { token: 5040, word: "]" },
+  127: { token: 5010, word: "(" },
+  128: { token: 5020, word: ")" },
+  129: { token: 5030, word: "[" },
+  130: { token: 5040, word: "]" },
 
   // Números y strings (6000-7000)
-  130: { token: 6000, word: "INT" },
-  131: { token: 6010, word: "FLOAT" },
-  132: { token: 7000, word: "STRING" },
+  131: { token: 6000, word: "INT" },
+  132: { token: 6010, word: "FLOAT" },
+  133: { token: 7000, word: "STRING" },
 
   // Identificador (8000)
   200: { token: 8000, word: "ID" },
@@ -1188,14 +1190,94 @@ const IDENTIFIER_STATE = 200;
 const identifierTransitionRowIndex = transitionTable.length - 1;
 type LexedToken = { token: number; word: string; value?: string };
 type TokenInfo = { token: number; word: string };
+const ID_TOKEN: TokenInfo = { token: 8000, word: "ID" };
+const INT_TOKEN: TokenInfo = { token: 6000, word: "INT" };
+const FLOAT_TOKEN: TokenInfo = { token: 6010, word: "FLOAT" };
+const STRING_TOKEN: TokenInfo = { token: 7000, word: "STRING" };
 const tokenByCode: Record<number, TokenInfo> = {};
+const reservedWordToToken: Record<string, TokenInfo> = {};
+const literalTokenToToken: Record<string, TokenInfo> = {};
 
 for (const tokenInfo of Object.values(tokenTable)) {
   tokenByCode[tokenInfo.token] = tokenInfo;
+  if (tokenInfo.token >= 1000 && tokenInfo.token < 2000) {
+    reservedWordToToken[tokenInfo.word] = tokenInfo;
+  }
+  literalTokenToToken[tokenInfo.word] = tokenInfo;
 }
 
 class Tokenizer {
   private readonly spaceColumnIndex = charToIndex[" "];
+
+  private readonly compoundOperators = [
+    "===",
+    "!==",
+    "==",
+    "!=",
+    "<=",
+    ">=",
+    "&&",
+    "||",
+    "++",
+    "--",
+  ];
+
+  private readonly singleOperators = [
+    "+",
+    "-",
+    "*",
+    "/",
+    "%",
+    "<",
+    ">",
+    "=",
+    "!",
+    "&",
+    "|",
+    ".",
+    ",",
+    ";",
+    ":",
+    "{",
+    "}",
+    "(",
+    ")",
+    "[",
+    "]",
+  ];
+
+  private normalizeTokenByLexeme(
+    fallbackToken: TokenInfo,
+    lexeme: string,
+  ): TokenInfo {
+    if (fallbackToken.word === "STRING") {
+      return STRING_TOKEN;
+    }
+
+    const reservedToken = reservedWordToToken[lexeme];
+    if (reservedToken) {
+      return reservedToken;
+    }
+
+    const literalToken = literalTokenToToken[lexeme];
+    if (literalToken) {
+      return literalToken;
+    }
+
+    if (/^\d+$/.test(lexeme)) {
+      return INT_TOKEN;
+    }
+
+    if (/^\d+\.\d+$/.test(lexeme)) {
+      return FLOAT_TOKEN;
+    }
+
+    if (/^[a-zñ_][a-zñ0-9_]*$/i.test(lexeme)) {
+      return ID_TOKEN;
+    }
+
+    return fallbackToken;
+  }
 
   private shouldConsumeChar(tokenInfo: TokenInfo, char: string): boolean {
     if (
@@ -1219,19 +1301,21 @@ class Tokenizer {
 
   public lexer(input: string): LexedToken[] {
     const tokens: LexedToken[] = [];
-    const scanInput = `${input} `;
     let i = 0;
     const n = input.length;
-    const scanN = scanInput.length;
 
     while (i < n) {
-      // Saltar espacios
-      if (/\s/.test(input[i] ?? "")) {
+      const currentChar = input[i] ?? "";
+
+      // Saltar espacios y saltos de línea
+      if (/\s/.test(currentChar)) {
         i++;
         continue;
       }
 
-      if (input[i] === '"') {
+      const remainingInput = input.slice(i);
+
+      if (currentChar === '"') {
         const start = i;
         i++;
 
@@ -1252,14 +1336,74 @@ class Tokenizer {
         continue;
       }
 
+      const identifierMatch = remainingInput.match(/^[a-zñ_][a-zñ0-9_]*/i);
+      if (identifierMatch) {
+        const lexeme = identifierMatch[0];
+        const tokenInfo = this.normalizeTokenByLexeme(ID_TOKEN, lexeme);
+        tokens.push({
+          token: tokenInfo.token,
+          word: tokenInfo.word,
+          value: lexeme,
+        });
+        i += lexeme.length;
+        continue;
+      }
+
+      const numberMatch = remainingInput.match(/^\d+(?:\.\d+)?/);
+      if (numberMatch) {
+        const lexeme = numberMatch[0];
+        const tokenInfo = lexeme.includes(".") ? FLOAT_TOKEN : INT_TOKEN;
+        tokens.push({
+          token: tokenInfo.token,
+          word: tokenInfo.word,
+          value: lexeme,
+        });
+        i += lexeme.length;
+        continue;
+      }
+
+      const compoundOperator = this.compoundOperators.find((operator) =>
+        remainingInput.startsWith(operator),
+      );
+      if (compoundOperator) {
+        const tokenInfo = literalTokenToToken[compoundOperator];
+        if (!tokenInfo) {
+          throw new Error(`Operador no reconocido: "${compoundOperator}"`);
+        }
+        tokens.push({
+          token: tokenInfo.token,
+          word: tokenInfo.word,
+          value: compoundOperator,
+        });
+        i += compoundOperator.length;
+        continue;
+      }
+
+      const singleOperator = this.singleOperators.find((operator) =>
+        remainingInput.startsWith(operator),
+      );
+      if (singleOperator) {
+        const tokenInfo = literalTokenToToken[singleOperator];
+        if (!tokenInfo) {
+          throw new Error(`Operador no reconocido: "${singleOperator}"`);
+        }
+        tokens.push({
+          token: tokenInfo.token,
+          word: tokenInfo.word,
+          value: singleOperator,
+        });
+        i += singleOperator.length;
+        continue;
+      }
+
       let currentRow = 0;
       let lexeme = "";
       let lastValidToken: TokenInfo | null = null;
       let lastValidLexeme = "";
       let lastValidIndex = i;
 
-      while (i < scanN) {
-        const char = scanInput.charAt(i);
+      while (i < n) {
+        const char = input.charAt(i);
         const colIndex =
           charToIndex[char] ??
           (this.spaceColumnIndex !== undefined && /\s/.test(char)
@@ -1322,9 +1466,14 @@ class Tokenizer {
 
       // Si encontramos un token válido
       if (lastValidToken) {
+        const normalizedToken = this.normalizeTokenByLexeme(
+          lastValidToken,
+          lastValidLexeme,
+        );
+
         tokens.push({
-          token: lastValidToken.token,
-          word: lastValidToken.word,
+          token: normalizedToken.token,
+          word: normalizedToken.word,
           value: lastValidLexeme,
         });
         i = lastValidIndex;
@@ -1342,9 +1491,13 @@ class Tokenizer {
 
           const idRow = startRow[colIndex];
           if (idRow === IDENTIFIER_STATE) {
+            const normalizedToken = this.normalizeTokenByLexeme(
+              ID_TOKEN,
+              lexeme,
+            );
             tokens.push({
-              token: 8000,
-              word: "ID",
+              token: normalizedToken.token,
+              word: normalizedToken.word,
               value: lexeme,
             });
           } else {
