@@ -1,4 +1,4 @@
-const tokenTable: Record<number, { token: number; word: string }> = {
+export const tokenTable: Record<number, { token: number; word: string }> = {
   // Palabras reservadas
   3: { token: 1010, word: "break" },
   7: { token: 1020, word: "case" },
@@ -69,9 +69,9 @@ const tokenTable: Record<number, { token: number; word: string }> = {
   200: { token: 8000, word: "ID" },
 };
 
-type TransitionMap = Record<string, number>;
+export type TransitionMap = Record<string, number>;
 
-const transitionTable: TransitionMap[] = [
+export const transitionTable: TransitionMap[] = [
   // FILA 0: DISPATCH INICIAL
   {
     a: 200,
@@ -538,6 +538,62 @@ const transitionTable: TransitionMap[] = [
 type LexedToken = { token: number; word: string; value?: string };
 type TokenInfo = { token: number; word: string };
 
+export const stateToTokenCode: Record<number, number> = {
+  7: 1020,
+  11: 1030,
+  24: 1050,
+  31: 1060,
+  36: 1080,
+  40: 1090,
+  53: 1110,
+  56: 1120,
+  59: 1130,
+  65: 1140,
+  69: 1150,
+  75: 1160,
+  77: 1070,
+  83: 1170,
+  87: 1180,
+  90: 1190,
+  92: 1100,
+  97: 1200,
+  100: 2005,
+  101: 2010,
+  102: 2020,
+  103: 2030,
+  104: 2040,
+  105: 2050,
+  106: 2060,
+  107: 2070,
+  108: 2080,
+  109: 2090,
+  110: 2100,
+  111: 2110,
+  112: 2120,
+  113: 2130,
+  114: 2140,
+  115: 2150,
+  116: 2160,
+  117: 2180,
+  118: 2170,
+  119: 2190,
+  120: 2200,
+  121: 3010,
+  122: 3020,
+  123: 3030,
+  124: 3040,
+  125: 4010,
+  126: 4020,
+  127: 5010,
+  128: 5020,
+  129: 5030,
+  130: 5040,
+  131: 6000,
+  132: 6010,
+  134: 7000,
+  200: 8000,
+};
+
 const tokenByCode: Record<number, TokenInfo> = {};
 const reservedWords: Record<string, TokenInfo> = {};
 
@@ -597,63 +653,7 @@ class Tokenizer {
   }
 
   private getTokenForState(state: number, lexeme: string): TokenInfo | null {
-    const stateToToken: Record<number, number> = {
-      7: 1020,
-      11: 1030,
-      24: 1050,
-      31: 1060,
-      36: 1080,
-      40: 1090,
-      53: 1110,
-      56: 1120,
-      59: 1130,
-      65: 1140,
-      69: 1150,
-      75: 1160,
-      77: 1070,
-      83: 1170,
-      87: 1180,
-      90: 1190,
-      92: 1100,
-      97: 1200,
-      100: 2005,
-      101: 2010,
-      102: 2020,
-      103: 2030,
-      104: 2040,
-      105: 2050,
-      106: 2060,
-      107: 2070,
-      108: 2080,
-      109: 2090,
-      110: 2100,
-      111: 2110,
-      112: 2120,
-      113: 2130,
-      114: 2140,
-      115: 2150,
-      116: 2160,
-      117: 2180,
-      118: 2170,
-      119: 2190,
-      120: 2200,
-      121: 3010,
-      122: 3020,
-      123: 3030,
-      124: 3040,
-      125: 4010,
-      126: 4020,
-      127: 5010,
-      128: 5020,
-      129: 5030,
-      130: 5040,
-      131: 6000,
-      132: 6010,
-      134: 7000,
-      200: 8000,
-    };
-
-    const tokenCode = stateToToken[state];
+    const tokenCode = stateToTokenCode[state];
     if (!tokenCode) {
       return null;
     }

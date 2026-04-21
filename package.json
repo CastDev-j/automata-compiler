@@ -11,6 +11,10 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "bun run --watch app/index.ts"
+    "dev": "bun run --watch app/index.ts",
+    "export:xlsx": "bun run app/compiler/export-transition-table.ts"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
   }
 }
