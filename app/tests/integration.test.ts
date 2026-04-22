@@ -5,28 +5,42 @@ import { demoPath, outputPath, runFromDemoFile } from "@/index";
 
 test("integration: archivo demo genera output.txt", async () => {
   const source = await Bun.file(demoPath).text();
-  const tokenCodes = lexer(source).map((token) => token.token);
+  const tokenResult = lexer(source);
+  
+  if (!tokenResult) {
+    throw new Error("Lexer no pudo procesar el archivo demo");
+  }
+  
+  const tokenCodes = tokenResult.map((token) => token.token);
   const expectedOutput = tokenCodes.join(" ");
 
   const writtenOutput = await runFromDemoFile();
   const outputFromFile = (await Bun.file(outputPath).text()).trim();
 
-  expect(writtenOutput).toBe(expectedOutput);
+  expect(writtenOutput?.map((t: any) => t.token).join(" ")).toBe(expectedOutput);
   expect(outputFromFile).toBe(expectedOutput);
 });
 
 test("integration: cobertura de lenguaje completo", () => {
   const source = [
     "break case class const console default do enum for if interface let log of push return switch type var while",
-    "id _tmp item1 item_2 whilees",
-    "0 1 2 3 4 5 6 7 8 9 10 25 300 42.5 3.1416",
-    "+ - * / % < <= > >= = == === ! != !== & && | || ++ --",
+    "id _tmp item1 item_2 whilees brecord foreverywhere",
+    "0 1 2 3 4 5 6 7 8 9 10 25 300 42.5 3.1416 0.5",
+    "+ - * / % < <= > >= = == === ! != !== & && | || ++ -- &",
     ". , ; : { } ( ) [ ]",
     '"string simple"',
     '"string con espacios y 123"',
+    "a c g h j k m n u v x y z _",
+    "a,v,c,a",
   ].join("\n");
 
-  const tokens = lexer(source);
+  const tokenResult = lexer(source);
+  
+  if (!tokenResult) {
+    throw new Error("Lexer falló al procesar el código");
+  }
+  
+  const tokens = tokenResult;
   const issues: string[] = [];
 
   const reservedWords = new Map<string, number>([
@@ -72,6 +86,8 @@ test("integration: cobertura de lenguaje completo", () => {
     ["||", 2180],
     ["++", 2010],
     ["--", 2020],
+    ["&", 2190],
+    ["|", 2200],
   ]);
 
   const punctuationTokens = new Map<string, number>([
@@ -87,6 +103,23 @@ test("integration: cobertura de lenguaje completo", () => {
     ["]", 5040],
   ]);
 
+  const singleLetterTokens = new Map<string, number>([
+    ["a", 8001],
+    ["c", 8002],
+    ["g", 8003],
+    ["h", 8004],
+    ["j", 8005],
+    ["k", 8006],
+    ["m", 8007],
+    ["n", 8008],
+    ["u", 8009],
+    ["v", 8010],
+    ["x", 8011],
+    ["y", 8012],
+    ["z", 8013],
+    ["_", 8014],
+  ]);
+
   for (const [word, tokenCode] of reservedWords) {
     const token = tokens.find((t) => t.value === word);
     if (!token) {
@@ -100,7 +133,7 @@ test("integration: cobertura de lenguaje completo", () => {
     }
   }
 
-  const expectedIds = ["id", "_tmp", "item1", "item_2", "whilees"];
+  const expectedIds = ["id", "_tmp", "item1", "item_2", "whilees", "brecord", "foreverywhere"];
   for (const id of expectedIds) {
     const token = tokens.find((t) => t.value === id);
     if (!token) {
@@ -138,7 +171,7 @@ test("integration: cobertura de lenguaje completo", () => {
     }
   }
 
-  const expectedFloats = ["42.5", "3.1416"];
+  const expectedFloats = ["42.5", "3.1416", "0.5"];
   for (const n of expectedFloats) {
     const token = tokens.find((t) => t.value === n);
     if (!token) {
@@ -190,6 +223,42 @@ test("integration: cobertura de lenguaje completo", () => {
         `STRING mal clasificado: ${s} -> ${token.token}, esperado 7000`,
       );
     }
+  }
+
+  for (const [letter, tokenCode] of singleLetterTokens) {
+    const token = tokens.find((t) => t.value === letter);
+    if (!token) {
+      issues.push(`Letra individual no encontrada: ${letter}`);
+      continue;
+    }
+    if (token.token !== tokenCode) {
+      issues.push(
+        `Letra individual mal clasificada: ${letter} -> ${token.token}, esperado ${tokenCode}`,
+      );
+    }
+  }
+
+  // Prueba especial: verificar que "a,v,c,a" genera 7 tokens
+  const expectedSequence = ["a", ",", "v", ",", "c", ",", "a"];
+  let foundSequence = false;
+  
+  for (let i = 0; i <= tokens.length - expectedSequence.length; i++) {
+    let match = true;
+    for (let j = 0; j < expectedSequence.length; j++) {
+      const currentToken = tokens[i + j];
+      if (!currentToken || currentToken.value !== expectedSequence[j]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) {
+      foundSequence = true;
+      break;
+    }
+  }
+  
+  if (!foundSequence) {
+    issues.push("Secuencia 'a,v,c,a' no genera los 7 tokens correctos");
   }
 
   expect(issues).toEqual([]);
