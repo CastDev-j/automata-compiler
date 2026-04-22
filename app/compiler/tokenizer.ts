@@ -1,4 +1,4 @@
-const tokenTable: Record<number, { token: number; word: string }> = {
+export const tokenTable: Record<number, { token: number; word: string }> = {
   // Palabras reservadas
   3: { token: 1010, word: "break" },
   7: { token: 1020, word: "case" },
@@ -69,10 +69,9 @@ const tokenTable: Record<number, { token: number; word: string }> = {
   200: { token: 8000, word: "ID" },
 };
 
-type TransitionMap = Record<string, number>;
+export type TransitionMap = Record<string, number>;
 
-// Cambiamos los corchetes [] por llaves {} para forzar el número de estado
-const transitionTable: Record<number, TransitionMap> = {
+export const transitionTable: TransitionMap[] = [
   // FILA 0: DISPATCH INICIAL
   0: {
     a: 200, b: 1, c: 6, d: 21, e: 29, f: 33, g: 200, h: 200, i: 36, j: 200,
@@ -235,6 +234,62 @@ const transitionTable: Record<number, TransitionMap> = {
 type LexedToken = { token: number; word: string; value?: string; path?: string };
 type TokenInfo = { token: number; word: string };
 
+export const stateToTokenCode: Record<number, number> = {
+  7: 1020,
+  11: 1030,
+  24: 1050,
+  31: 1060,
+  36: 1080,
+  40: 1090,
+  53: 1110,
+  56: 1120,
+  59: 1130,
+  65: 1140,
+  69: 1150,
+  75: 1160,
+  77: 1070,
+  83: 1170,
+  87: 1180,
+  90: 1190,
+  92: 1100,
+  97: 1200,
+  100: 2005,
+  101: 2010,
+  102: 2020,
+  103: 2030,
+  104: 2040,
+  105: 2050,
+  106: 2060,
+  107: 2070,
+  108: 2080,
+  109: 2090,
+  110: 2100,
+  111: 2110,
+  112: 2120,
+  113: 2130,
+  114: 2140,
+  115: 2150,
+  116: 2160,
+  117: 2180,
+  118: 2170,
+  119: 2190,
+  120: 2200,
+  121: 3010,
+  122: 3020,
+  123: 3030,
+  124: 3040,
+  125: 4010,
+  126: 4020,
+  127: 5010,
+  128: 5020,
+  129: 5030,
+  130: 5040,
+  131: 6000,
+  132: 6010,
+  134: 7000,
+  200: 8000,
+};
+
 const tokenByCode: Record<number, TokenInfo> = {};
 const reservedWords: Record<string, TokenInfo> = {};
 
@@ -364,39 +419,7 @@ class Tokenizer {
   }
 
   private getTokenForState(state: number, lexeme: string): TokenInfo | null {
-    const stateToToken: Record<number, number> = {
-      // Palabras Reservadas (Nuevos estados)
-      5: 1010,   // break
-      9: 1020,   // case
-      13: 1030,  // class
-      19: 1040,  // console
-      20: 1050,  // const
-      27: 1060,  // default
-      28: 1070,  // do
-      32: 1080,  // enum
-      35: 1090,  // for
-      37: 1100,  // if
-      45: 1110,  // interface
-      48: 1120,  // let
-      50: 1130,  // log
-      52: 1140,  // of
-      56: 1150,  // push
-      62: 1160,  // return
-      68: 1170,  // switch
-      72: 1180,  // type
-      75: 1190,  // var
-      80: 1200,  // while
-
-      // Operadores y símbolos (Tus estados originales intactos)
-      100: 2005, 101: 2010, 102: 2020, 103: 2030, 104: 2040, 105: 2050,
-      106: 2060, 107: 2070, 108: 2080, 109: 2090, 110: 2100, 111: 2110,
-      112: 2120, 113: 2130, 114: 2140, 115: 2150, 116: 2160, 117: 2180,
-      118: 2170, 119: 2190, 120: 2200, 121: 3010, 122: 3020, 123: 3030,
-      124: 3040, 125: 4010, 126: 4020, 127: 5010, 128: 5020, 129: 5030,
-      130: 5040, 131: 6000, 132: 6010, 134: 7000, 200: 8000,
-    };
-
-    const tokenCode = stateToToken[state];
+    const tokenCode = stateToTokenCode[state];
     if (!tokenCode) {
       return null;
     }
