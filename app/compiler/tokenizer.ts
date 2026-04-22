@@ -71,471 +71,168 @@ const tokenTable: Record<number, { token: number; word: string }> = {
 
 type TransitionMap = Record<string, number>;
 
-const transitionTable: TransitionMap[] = [
+// Cambiamos los corchetes [] por llaves {} para forzar el número de estado
+const transitionTable: Record<number, TransitionMap> = {
   // FILA 0: DISPATCH INICIAL
-  {
-    a: 200,
-    b: 1,
-    c: 2,
-    d: 8,
-    e: 12,
-    f: 15,
-    g: 200,
-    h: 200,
-    i: 19,
-    j: 200,
-    k: 200,
-    l: 22,
-    m: 200,
-    n: 200,
-    ñ: 200,
-    o: 29,
-    p: 30,
-    q: 200,
-    r: 35,
-    s: 37,
-    t: 38,
-    u: 200,
-    v: 42,
-    w: 44,
-    x: 200,
-    y: 200,
-    z: 200,
-    "0": 131,
-    "1": 131,
-    "2": 131,
-    "3": 131,
-    "4": 131,
-    "5": 131,
-    "6": 131,
-    "7": 131,
-    "8": 131,
-    "9": 131,
-    "+": 106,
-    "-": 107,
-    "*": 103,
-    "/": 104,
-    "%": 105,
-    "<": 108,
-    ">": 111,
-    "=": 100,
-    "!": 116,
-    "&": 119,
-    "|": 120,
-    ".": 121,
-    ",": 122,
-    ";": 123,
-    ":": 124,
-    "{": 125,
-    "}": 126,
-    "(": 127,
-    ")": 128,
-    "[": 129,
-    "]": 130,
-    _: 200,
-    '"': 133,
-    " ": 0,
+  0: {
+    a: 200, b: 1, c: 6, d: 21, e: 29, f: 33, g: 200, h: 200, i: 36, j: 200,
+    k: 200, l: 46, m: 200, n: 200, ñ: 200, o: 51, p: 53, q: 200, r: 57, s: 63,
+    t: 69, u: 200, v: 73, w: 76, x: 200, y: 200, z: 200,
+    "0": 131, "1": 131, "2": 131, "3": 131, "4": 131, "5": 131, "6": 131,
+    "7": 131, "8": 131, "9": 131, "+": 106, "-": 107, "*": 103, "/": 104,
+    "%": 105, "<": 108, ">": 111, "=": 100, "!": 116, "&": 119, "|": 120,
+    ".": 121, ",": 122, ";": 123, ":": 124, "{": 125, "}": 126, "(": 127,
+    ")": 128, "[": 129, "]": 130, _: 200, '"': 133, " ": 0,
   },
 
-  // b (1)
-  { r: 3, _: 200 },
-
-  // c (2)
-  { a: 3, l: 4, o: 5, _: 200 },
-
-  // ca (3)
-  { s: 6, _: 200 },
-
-  // cl (4)
-  { a: 9, _: 200 },
-
-  // co (5)
-  { n: 10, _: 200 },
-
-  // cas (6)
-  { e: 7, _: 200 },
-
-  // case (7)
-  { _: 200 },
-
-  // d (8)
-  { e: 26, o: 77, _: 200 },
-
-  // cla (9)
-  { s: 11, _: 200 },
-
-  // con (10)
-  { s: 23, _: 200 },
-
-  // clas (11)
-  { s: 11, _: 200 },
-
-  // e (12)
-  { n: 13, _: 200 },
-
-  // en (13)
-  { u: 14, _: 200 },
-
-  // enu (14)
-  { m: 36, _: 200 },
-
-  // f (15)
-  { o: 39, _: 200 },
-
-  // i (19)
-  { f: 92, n: 46, _: 200 },
-
-  // l (22)
-  { e: 55, o: 58, _: 200 },
-
-  // cons (23)
-  { t: 24, _: 200 },
-
-  // const (24)
-  { _: 200 },
-
-  // de (26)
-  { f: 27, _: 200 },
-
-  // def (27)
-  { a: 28, _: 200 },
-
-  // defa (28)
-  { u: 29, _: 200 },
-
-  // defau (29)
-  { l: 30, _: 200 },
-
-  // defaul (30)
-  { t: 31, _: 200 },
-
-  // default (31)
-  { _: 200 },
-
-  // o (29)
-  { f: 65, _: 200 },
-
-  // p (30)
-  { u: 67, _: 200 },
-
-  // r (35)
-  { e: 71, _: 200 },
-
-  // enum (36)
-  { _: 200 },
-
-  // s (37)
-  { w: 79, _: 200 },
-
-  // t (38)
-  { y: 85, _: 200 },
-
-  // fo (39)
-  { r: 40, _: 200 },
-
-  // for (40)
-  { _: 200 },
-
-  // v (42)
-  { a: 89, _: 200 },
-
-  // w (44)
-  { h: 94, _: 200 },
-
-  // in (46)
-  { t: 47, _: 200 },
-
-  // int (47)
-  { e: 48, _: 200 },
-
-  // inte (48)
-  { r: 49, _: 200 },
-
-  // inter (49)
-  { f: 50, _: 200 },
-
-  // interf (50)
-  { a: 51, _: 200 },
-
-  // interfa (51)
-  { c: 52, _: 200 },
-
-  // interac (52)
-  { e: 53, _: 200 },
-
-  // interface (53)
-  { _: 200 },
-
-  // le (55)
-  { t: 56, _: 200 },
-
-  // let (56)
-  { _: 200 },
-
-  // lo (58)
-  { g: 59, _: 200 },
-
-  // log (59)
-  { _: 200 },
-
-  // of (65)
-  { _: 200 },
-
-  // pu (67)
-  { s: 68, _: 200 },
-
-  // pus (68)
-  { h: 69, _: 200 },
-
-  // push (69)
-  { _: 200 },
-
-  // re (71)
-  { t: 72, _: 200 },
-
-  // ret (72)
-  { u: 73, _: 200 },
-
-  // retu (73)
-  { r: 74, _: 200 },
-
-  // retur (74)
-  { n: 75, _: 200 },
-
-  // return (75)
-  { _: 200 },
-
-  // do (77)
-  { _: 200 },
-
-  // sw (79)
-  { i: 80, _: 200 },
-
-  // swi (80)
-  { t: 81, _: 200 },
-
-  // swit (81)
-  { c: 82, _: 200 },
-
-  // switc (82)
-  { h: 83, _: 200 },
-
-  // switch (83)
-  { _: 200 },
-
-  // ty (85)
-  { p: 86, _: 200 },
-
-  // typ (86)
-  { e: 87, _: 200 },
-
-  // type (87)
-  { _: 200 },
-
-  // va (89)
-  { r: 90, _: 200 },
-
-  // var (90)
-  { _: 200 },
-
-  // if (92)
-  { _: 200 },
-
-  // wh (94)
-  { i: 95, _: 200 },
-
-  // whi (95)
-  { l: 96, _: 200 },
-
-  // whil (96)
-  { e: 97, _: 200 },
-
-  // while (97)
-  { _: 200 },
-
-  // = (100)
-  { "=": 112 },
-
-  // ++ (101)
-  {},
-
-  // -- (102)
-  {},
-
-  // * (103)
-  {},
-
-  // / (104)
-  {},
-
-  // % (105)
-  {},
-
-  // + (106)
-  { "+": 101 },
-
-  // - (107)
-  { "-": 102 },
-
-  // < (108)
-  { "=": 109 },
-
-  // <= (109)
-  {},
-
-  // >= (110)
-  {},
-
-  // > (111)
-  { "=": 110 },
-
-  // == (112)
-  { "=": 114 },
-
-  // != (113)
-  { "=": 115 },
-
-  // === (114)
-  {},
-
-  // !== (115)
-  {},
-
-  // ! (116)
-  { "=": 113 },
-
-  // || (117)
-  {},
-
-  // && (118)
-  {},
-
-  // & (119)
-  { "&": 118 },
-
-  // | (120)
-  { "|": 117 },
-
-  // . (121)
-  {
-    "0": 132,
-    "1": 132,
-    "2": 132,
-    "3": 132,
-    "4": 132,
-    "5": 132,
-    "6": 132,
-    "7": 132,
-    "8": 132,
-    "9": 132,
-  },
-
-  // , (122)
-  {},
-
-  // ; (123)
-  {},
-
-  // : (124)
-  {},
-
-  // { (125)
-  {},
-
-  // } (126)
-  {},
-
-  // ( (127)
-  {},
-
-  // ) (128)
-  {},
-
-  // [ (129)
-  {},
-
-  // ] (130)
-  {},
-
-  // INT (131)
-  {
-    "0": 131,
-    "1": 131,
-    "2": 131,
-    "3": 131,
-    "4": 131,
-    "5": 131,
-    "6": 131,
-    "7": 131,
-    "8": 131,
-    "9": 131,
-    ".": 132,
-  },
-
-  // FLOAT (132)
-  {
-    "0": 132,
-    "1": 132,
-    "2": 132,
-    "3": 132,
-    "4": 132,
-    "5": 132,
-    "6": 132,
-    "7": 132,
-    "8": 132,
-    "9": 132,
-  },
-
-  // STRING (133)
-  { '"': 134 },
-
-  // STRING_END (134)
-  {},
-
-  // IDENTIFICADOR (200)
-  {
-    a: 200,
-    b: 200,
-    c: 200,
-    d: 200,
-    e: 200,
-    f: 200,
-    g: 200,
-    h: 200,
-    i: 200,
-    j: 200,
-    k: 200,
-    l: 200,
-    m: 200,
-    n: 200,
-    ñ: 200,
-    o: 200,
-    p: 200,
-    q: 200,
-    r: 200,
-    s: 200,
-    t: 200,
-    u: 200,
-    v: 200,
-    w: 200,
-    x: 200,
-    y: 200,
-    z: 200,
-    "0": 200,
-    "1": 200,
-    "2": 200,
-    "3": 200,
-    "4": 200,
-    "5": 200,
-    "6": 200,
-    "7": 200,
-    "8": 200,
-    "9": 200,
-    _: 200,
-  },
-];
-
-type LexedToken = { token: number; word: string; value?: string };
+  // ===== RUTA B =====
+  1: { r: 2, _: 200 }, // b
+  2: { e: 3, _: 200 }, // br
+  3: { a: 4, _: 200 }, // bre
+  4: { k: 5, _: 200 }, // brea
+  5: { _: 200 },       // break (Fin)
+
+  // ===== RUTAS C =====
+  6: { a: 7, l: 10, o: 14, _: 200 }, // c
+  7: { s: 8, _: 200 },               // ca
+  8: { e: 9, _: 200 },               // cas
+  9: { _: 200 },                     // case (Fin)
+  10: { a: 11, _: 200 },             // cl
+  11: { s: 12, _: 200 },             // cla
+  12: { s: 13, _: 200 },             // clas
+  13: { _: 200 },                    // class (Fin)
+  14: { n: 15, _: 200 },             // co
+  15: { s: 16, _: 200 },             // con
+  16: { o: 17, t: 20, _: 200 },      // cons (Separa console y const)
+  17: { l: 18, _: 200 },             // conso
+  18: { e: 19, _: 200 },             // consol
+  19: { _: 200 },                    // console (Fin)
+  20: { _: 200 },                    // const (Fin)
+
+  // ===== RUTAS D =====
+  21: { e: 22, o: 28, _: 200 }, // d
+  22: { f: 23, _: 200 },        // de
+  23: { a: 24, _: 200 },        // def
+  24: { u: 25, _: 200 },        // defa
+  25: { l: 26, _: 200 },        // defau
+  26: { t: 27, _: 200 },        // defaul
+  27: { _: 200 },               // default (Fin)
+  28: { _: 200 },               // do (Fin)
+
+  // ===== RUTA E =====
+  29: { n: 30, _: 200 }, // e
+  30: { u: 31, _: 200 }, // en
+  31: { m: 32, _: 200 }, // enu
+  32: { _: 200 },        // enum (Fin)
+
+  // ===== RUTA F =====
+  33: { o: 34, _: 200 }, // f
+  34: { r: 35, _: 200 }, // fo
+  35: { _: 200 },        // for (Fin)
+
+  // ===== RUTAS I =====
+  36: { f: 37, n: 38, _: 200 }, // i
+  37: { _: 200 },               // if (Fin)
+  38: { t: 39, _: 200 },        // in
+  39: { e: 40, _: 200 },        // int
+  40: { r: 41, _: 200 },        // inte
+  41: { f: 42, _: 200 },        // inter
+  42: { a: 43, _: 200 },        // interf
+  43: { c: 44, _: 200 },        // interfa
+  44: { e: 45, _: 200 },        // interfac
+  45: { _: 200 },               // interface (Fin)
+
+  // ===== RUTAS L =====
+  46: { e: 47, o: 49, _: 200 }, // l
+  47: { t: 48, _: 200 },        // le
+  48: { _: 200 },               // let (Fin)
+  49: { g: 50, _: 200 },        // lo
+  50: { _: 200 },               // log (Fin)
+
+  // ===== RUTA O =====
+  51: { f: 52, _: 200 }, // o
+  52: { _: 200 },        // of (Fin)
+
+  // ===== RUTA P =====
+  53: { u: 54, _: 200 }, // p
+  54: { s: 55, _: 200 }, // pu
+  55: { h: 56, _: 200 }, // pus
+  56: { _: 200 },        // push (Fin)
+
+  // ===== RUTA R =====
+  57: { e: 58, _: 200 }, // r
+  58: { t: 59, _: 200 }, // re
+  59: { u: 60, _: 200 }, // ret
+  60: { r: 61, _: 200 }, // retu
+  61: { n: 62, _: 200 }, // retur
+  62: { _: 200 },        // return (Fin)
+
+  // ===== RUTA S =====
+  63: { w: 64, _: 200 }, // s
+  64: { i: 65, _: 200 }, // sw
+  65: { t: 66, _: 200 }, // swi
+  66: { c: 67, _: 200 }, // swit
+  67: { h: 68, _: 200 }, // switc
+  68: { _: 200 },        // switch (Fin)
+
+  // ===== RUTA T =====
+  69: { y: 70, _: 200 }, // t
+  70: { p: 71, _: 200 }, // ty
+  71: { e: 72, _: 200 }, // typ
+  72: { _: 200 },        // type (Fin)
+
+  // ===== RUTA V =====
+  73: { a: 74, _: 200 }, // v
+  74: { r: 75, _: 200 }, // va
+  75: { _: 200 },        // var (Fin)
+
+  // ===== RUTA W =====
+  76: { h: 77, _: 200 }, // w
+  77: { i: 78, _: 200 }, // wh
+  78: { l: 79, _: 200 }, // whi
+  79: { e: 80, _: 200 }, // whil
+  80: { _: 200 },        // while (Fin)
+
+  // ===== OPERADORES, PUNTUACIÓN Y OTROS (Manteniendo tus números) =====
+  100: { "=": 112 },
+  101: {},
+  102: {},
+  103: {},
+  104: {},
+  105: {},
+  106: { "+": 101 },
+  107: { "-": 102 },
+  108: { "=": 109 },
+  109: {},
+  110: {},
+  111: { "=": 110 },
+  112: { "=": 114 },
+  113: { "=": 115 },
+  114: {},
+  115: {},
+  116: { "=": 113 },
+  117: {},
+  118: {},
+  119: { "&": 118 },
+  120: { "|": 117 },
+  121: { "0": 132, "1": 132, "2": 132, "3": 132, "4": 132, "5": 132, "6": 132, "7": 132, "8": 132, "9": 132 },
+  122: {},
+  123: {},
+  124: {},
+  125: {},
+  126: {},
+  127: {},
+  128: {},
+  129: {},
+  130: {},
+  131: { "0": 131, "1": 131, "2": 131, "3": 131, "4": 131, "5": 131, "6": 131, "7": 131, "8": 131, "9": 131, ".": 132 },
+  132: { "0": 132, "1": 132, "2": 132, "3": 132, "4": 132, "5": 132, "6": 132, "7": 132, "8": 132, "9": 132 },
+  133: { '"': 134 },
+  134: {},
+  200: { _: 200 },
+};
+
+type LexedToken = { token: number; word: string; value?: string; path?: string };
 type TokenInfo = { token: number; word: string };
 
 const tokenByCode: Record<number, TokenInfo> = {};
@@ -549,6 +246,76 @@ for (const tokenInfo of Object.values(tokenTable)) {
 }
 
 class Tokenizer {
+  public exportTransitionTableToCSV(): string {
+    // Definimos todos los símbolos que queremos como columnas
+    const symbols = [
+      ..."abcdefghijklmnñopqrstuvwxyz".split(""),
+      ..."0123456789".split(""),
+      "+", "-", "*", "/", "%", "<", ">", "=", "!", "&", "|",
+      ".", ",", ";", ":", "{", "}", "(", ")", "[", "]", "_", '"', " "
+    ];
+
+    // Función auxiliar para nombrar columnas especiales y que no rompan el formato
+    const getSymbolName = (s: string) => {
+      if (s === " ") return "espacio";
+      if (s === ",") return "coma";
+      if (s === '"') return "comilla_doble";
+      return s;
+    };
+
+    // Construimos la cabecera exacta de tu Excel
+    const headers = [
+      "estado",
+      "tokenFinal",
+      "categoria",
+      "transicionesDefinidas",
+      ...symbols.map(s => `simbolo:${getSymbolName(s)}`)
+    ];
+
+    let csvContent = headers.join(",") + "\n";
+
+    // Generamos las filas para todos tus estados (0 al 134) y el 200
+    const allStates = Array.from({ length: 135 }, (_, i) => i).concat([200]);
+
+    for (const state of allStates) {
+      // Obtenemos información del token para esta fila
+      const tokenInfo = state === 0 ? null : this.getTokenForState(state, "dummy");
+      const isFinal = tokenInfo !== null;
+      const tokenFinal = isFinal ? tokenInfo.word : "";
+      const categoria = this.getCategoryName(tokenInfo?.token ?? null, state);
+
+      const currentTransitions = transitionTable[state] ?? {};
+      
+      // Contamos las transiciones definidas (ignorando el fallback '_')
+      const explicitTransitions = Object.keys(currentTransitions).filter(k => k !== "_").length;
+
+      const row = [
+        state.toString(),
+        tokenFinal,
+        categoria,
+        explicitTransitions.toString()
+      ];
+
+      // Simulamos qué pasaría con cada símbolo
+      for (const char of symbols) {
+        let nextRow = currentTransitions[char];
+        
+        if (nextRow === undefined) {
+          nextRow = this.getVirtualNextState(state, char);
+          if (nextRow === undefined) {
+            nextRow = currentTransitions["_"]; // Fallback (como ir al 200)
+          }
+        }
+
+        // Si hay estado de destino lo ponemos, si no, dejamos la celda en blanco
+        row.push(nextRow !== undefined ? nextRow.toString() : "");
+      }
+
+      csvContent += row.join(",") + "\n";
+    }
+
+    return csvContent;
+  }
   private getVirtualNextState(
     currentRow: number,
     char: string,
@@ -598,59 +365,35 @@ class Tokenizer {
 
   private getTokenForState(state: number, lexeme: string): TokenInfo | null {
     const stateToToken: Record<number, number> = {
-      7: 1020,
-      11: 1030,
-      24: 1050,
-      31: 1060,
-      36: 1080,
-      40: 1090,
-      53: 1110,
-      56: 1120,
-      59: 1130,
-      65: 1140,
-      69: 1150,
-      75: 1160,
-      77: 1070,
-      83: 1170,
-      87: 1180,
-      90: 1190,
-      92: 1100,
-      97: 1200,
-      100: 2005,
-      101: 2010,
-      102: 2020,
-      103: 2030,
-      104: 2040,
-      105: 2050,
-      106: 2060,
-      107: 2070,
-      108: 2080,
-      109: 2090,
-      110: 2100,
-      111: 2110,
-      112: 2120,
-      113: 2130,
-      114: 2140,
-      115: 2150,
-      116: 2160,
-      117: 2180,
-      118: 2170,
-      119: 2190,
-      120: 2200,
-      121: 3010,
-      122: 3020,
-      123: 3030,
-      124: 3040,
-      125: 4010,
-      126: 4020,
-      127: 5010,
-      128: 5020,
-      129: 5030,
-      130: 5040,
-      131: 6000,
-      132: 6010,
-      134: 7000,
-      200: 8000,
+      // Palabras Reservadas (Nuevos estados)
+      5: 1010,   // break
+      9: 1020,   // case
+      13: 1030,  // class
+      19: 1040,  // console
+      20: 1050,  // const
+      27: 1060,  // default
+      28: 1070,  // do
+      32: 1080,  // enum
+      35: 1090,  // for
+      37: 1100,  // if
+      45: 1110,  // interface
+      48: 1120,  // let
+      50: 1130,  // log
+      52: 1140,  // of
+      56: 1150,  // push
+      62: 1160,  // return
+      68: 1170,  // switch
+      72: 1180,  // type
+      75: 1190,  // var
+      80: 1200,  // while
+
+      // Operadores y símbolos (Tus estados originales intactos)
+      100: 2005, 101: 2010, 102: 2020, 103: 2030, 104: 2040, 105: 2050,
+      106: 2060, 107: 2070, 108: 2080, 109: 2090, 110: 2100, 111: 2110,
+      112: 2120, 113: 2130, 114: 2140, 115: 2150, 116: 2160, 117: 2180,
+      118: 2170, 119: 2190, 120: 2200, 121: 3010, 122: 3020, 123: 3030,
+      124: 3040, 125: 4010, 126: 4020, 127: 5010, 128: 5020, 129: 5030,
+      130: 5040, 131: 6000, 132: 6010, 134: 7000, 200: 8000,
     };
 
     const tokenCode = stateToToken[state];
@@ -659,16 +402,23 @@ class Tokenizer {
     }
 
     const tokenInfo = tokenByCode[tokenCode];
-    if (!tokenInfo) {
-      return null;
-    }
+    return tokenInfo ? tokenInfo : null;
+  }
+  
 
-    if (state === 200) {
-      const reserved = reservedWords[lexeme];
-      return reserved ?? tokenInfo;
-    }
-
-    return tokenInfo;
+  // Helper para asignar la categoría correcta según el número de token
+  private getCategoryName(tokenCode: number | null, state: number): string {
+    if (state === 0) return "No final";
+    if (!tokenCode) return "No final";
+    if (tokenCode >= 1000 && tokenCode < 2000) return "Reservada";
+    if (tokenCode >= 2000 && tokenCode < 3000) return "Operador";
+    if (tokenCode >= 3000 && tokenCode < 4000) return "Puntuacion";
+    if (tokenCode >= 4000 && tokenCode < 5000) return "Llave";
+    if (tokenCode >= 5000 && tokenCode < 6000) return "Parentesis/Corchete";
+    if (tokenCode >= 6000 && tokenCode < 7000) return "Numero";
+    if (tokenCode === 7000) return "String";
+    if (tokenCode === 8000) return "Identificador";
+    return "No final";
   }
 
   public lexer(input: string): LexedToken[] {
@@ -677,6 +427,7 @@ class Tokenizer {
     const n = input.length;
 
     while (i < n) {
+      // Omitir espacios en blanco
       while (i < n) {
         const current = input[i];
         if (current === undefined || !this.isSpace(current)) {
@@ -692,6 +443,10 @@ class Tokenizer {
       let lastValidState = -1;
       let lastValidLexeme = "";
       let lastValidIndex = i;
+      
+      // Iniciamos la ruta siempre en el estado 0
+      let currentPath = "0"; 
+      let lastValidPath = "";
 
       while (i < n) {
         const char = input[i];
@@ -710,6 +465,7 @@ class Tokenizer {
                 token: tokenInfo.token,
                 word: tokenInfo.word,
                 value: lastValidLexeme,
+                path: lastValidPath, 
               });
             }
           }
@@ -740,6 +496,7 @@ class Tokenizer {
                 token: tokenInfo.token,
                 word: tokenInfo.word,
                 value: lastValidLexeme,
+                path: lastValidPath,
               });
               i = lastValidIndex;
               break;
@@ -750,12 +507,19 @@ class Tokenizer {
 
         currentRow = nextRow;
         lexeme += char;
+        
+        // Damos formato a caracteres especiales para que no rompan la consola
+        const displayChar = char === "\n" ? "\\n" : char === "\r" ? "\\r" : char === "\t" ? "\\t" : char;
+        
+        // Concatenamos el caracter leído y el estado de destino
+        currentPath += ` -[${displayChar}]-> ${currentRow}`;
 
         const tokenInfo = this.getTokenForState(currentRow, lexeme);
         if (tokenInfo) {
           lastValidState = currentRow;
           lastValidLexeme = lexeme;
           lastValidIndex = i + 1;
+          lastValidPath = currentPath; // Guardamos el texto de la ruta hasta aquí
         }
 
         i++;
@@ -771,6 +535,7 @@ class Tokenizer {
             token: tokenInfo.token,
             word: tokenInfo.word,
             value: lastValidLexeme,
+            path: lastValidPath,
           });
         }
       }
