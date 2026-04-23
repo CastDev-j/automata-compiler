@@ -11,7 +11,9 @@ async function runFromDemoFile() {
   if (!tokens) return;
 
   console.log(source);
-
+  console.log(tokens.map(t=>t.token).flat().join(", "));
+  
+  
   console.log(tokens);
 
   await Bun.write(outputPath, tokens.map((t) => `${t.token}`).join(", "));

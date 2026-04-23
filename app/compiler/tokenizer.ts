@@ -2,7 +2,7 @@ import type { State } from "@/interface";
 
 
 
-const tokenTable: Record<number, { token: number; word: string }> = {
+const tokenTable: Record<number, { token: number; word: string } | { token: number; word: string }[]> = {
   // Palabras reservadas
   5: { token: 1010, word: "break" },
   9: { token: 1020, word: "case" },
@@ -66,6 +66,7 @@ const tokenTable: Record<number, { token: number; word: string }> = {
 
   // Identificador
   2000: { token: 8000, word: "ID" },
+  2001: [ { token: 8000, word: "ID" }, { token: 3020, word: "," }],
   1310: { token: 6000, word: "INT" },
   1320: { token: 6010, word: "FLOAT" },
   134: { token: 7000, word: "STRING" },
@@ -1567,13 +1568,25 @@ export const transitionTable: Record<number, State> = {
     r: 200, s: 200, t: 200, u: 200, v: 200, w: 200, x: 200, y: 200, z: 200,
     _: 200, "0": 200, "1": 200, "2": 200, "3": 200, "4": 200, "5": 200,
     "6": 200, "7": 200, "8": 200, "9": 200, "+": 0, "-": 0, "*": 0, "/": 0,
-    "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ".": 0, ",": 0,
+    "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ".": 0, ",": 2001,
     ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
     " ": 2000, "\t": 0, "\n": 0, "\r": 0,
   },
 
   // ESTADO 2000: IDENTIFICADOR (terminal)
   2000: {
+    a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0, h: 0, i: 0,
+    j: 0, k: 0, l: 0, m: 0, n: 0, ñ: 0, o: 0, p: 0, q: 0,
+    r: 0, s: 0, t: 0, u: 0, v: 0, w: 0, x: 0, y: 0, z: 0,
+    _: 0, "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0,
+    "6": 0, "7": 0, "8": 0, "9": 0, "+": 0, "-": 0, "*": 0, "/": 0,
+    "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ".": 0, ",": 0,
+    ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
+    " ": 202, "\t": 0, "\n": 0, "\r": 0,
+  },
+
+  // ESTADO 2001: IDENTIFICADOR (terminal)
+  2001: {
     a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0, h: 0, i: 0,
     j: 0, k: 0, l: 0, m: 0, n: 0, ñ: 0, o: 0, p: 0, q: 0,
     r: 0, s: 0, t: 0, u: 0, v: 0, w: 0, x: 0, y: 0, z: 0,
@@ -1624,10 +1637,11 @@ class Tokenizer {
       lexeme += ![" ", "\t", "\n", "\r"].includes(char!) ? char : "";
 
       if (tokenTable[newState] ) {
+        const tokenEntries = Array.isArray(tokenTable[newState]) ? tokenTable[newState] : [tokenTable[newState]];
         tokens.push({
-          token: tokenTable[newState].token,
-          word: tokenTable[newState].word,
-          value: lexeme, 
+          token: tokenEntries.map(entry => entry.token),
+          word: tokenEntries.map(entry => entry.word),
+          value: lexeme,
         });
         currentState = 0;
         lexeme = ""; 
