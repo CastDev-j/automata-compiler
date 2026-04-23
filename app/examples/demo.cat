@@ -1,1 +1,3 @@
-let ejemplo,test,test,test = 10;
+let ejemplo,test,test,test = 10 ;
+
+let ejemplo , test , test , test = 10 ; 
