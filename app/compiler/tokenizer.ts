@@ -1,5 +1,7 @@
 import type { State } from "@/interface";
 
+
+
 const tokenTable: Record<number, { token: number; word: string }> = {
   // Palabras reservadas
   5: { token: 1010, word: "break" },
@@ -62,13 +64,13 @@ const tokenTable: Record<number, { token: number; word: string }> = {
   129: { token: 5030, word: "[" },
   130: { token: 5040, word: "]" },
 
-  // Números y strings
-  131: { token: 6000, word: "INT" },
-  132: { token: 6010, word: "FLOAT" },
+  // Identificador
+  2000: { token: 8000, word: "ID" },
+  1310: { token: 6000, word: "INT" },
+  1320: { token: 6010, word: "FLOAT" },
   134: { token: 7000, word: "STRING" },
 
-  // Identificador
-  202: { token: 8000, word: "ID" },
+  // Error
   201: { token: 9000, word: "ERROR" },
 };
 
@@ -1483,6 +1485,18 @@ export const transitionTable: Record<number, State> = {
     v: 200, w: 200, x: 200, y: 200, z: 200, _: 200, "+": 0, "-": 0, "*": 0,
     "/": 0, "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ",": 0,
     ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
+    " ": 1310, "\t": 0, "\n": 0, "\r": 0,
+  },
+
+  // ESTADO 1310: "0" seguido de dígitos (número con cero al inicio, terminal)
+  1310: {
+    "0": 131, "1": 135, "2": 135, "3": 135, "4": 135, "5": 135, "6": 135,
+    "7": 135, "8": 135, "9": 135, ".": 0, a: 0, b: 0, c: 0, d: 0,
+    e: 0, f: 0, g: 0, h: 0, i: 0, j: 0, k: 0, l: 0, m: 0,
+    n: 0, ñ: 0, o: 0, p: 0, q: 0, r: 0, s: 0, t: 0, u: 0,
+    v: 0, w: 0, x: 0, y: 0, z: 0, _: 0, "+": 0, "-": 0, "*": 0,
+    "/": 0, "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ",": 0,
+    ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
     " ": 0, "\t": 0, "\n": 0, "\r": 0,
   },
 
@@ -1495,7 +1509,7 @@ export const transitionTable: Record<number, State> = {
     v: 200, w: 200, x: 200, y: 200, z: 200, _: 200, "+": 0, "-": 0, "*": 0,
     "/": 0, "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ",": 0,
     ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
-    " ": 0, "\t": 0, "\n": 0, "\r": 0,
+    " ": 1310, "\t": 0, "\n": 0, "\r": 0,
   },
 
   // ESTADO 132: flotante
@@ -1505,6 +1519,18 @@ export const transitionTable: Record<number, State> = {
     f: 200, g: 200, h: 200, i: 200, j: 200, k: 200, l: 200, m: 200, n: 200,
     ñ: 200, o: 200, p: 200, q: 200, r: 200, s: 200, t: 200, u: 200, v: 200,
     w: 200, x: 200, y: 200, z: 200, _: 200, "+": 0, "-": 0, "*": 0, "/": 0,
+    "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ".": 0, ",": 0,
+    ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
+    " ": 1320, "\t": 0, "\n": 0, "\r": 0,
+  },
+
+  // ESTADO 1320: flotante (terminal)
+  1320: {
+    "0": 131, "1": 135, "2": 135, "3": 135, "4": 135, "5": 135, "6": 135,
+    "7": 135, "8": 135, "9": 135, a: 0, b: 0, c: 0, d: 0, e: 0,
+    f: 0, g: 0, h: 0, i: 0, j: 0, k: 0, l: 0, m: 0, n: 0,
+    ñ: 0, o: 0, p: 0, q: 0, r: 0, s: 0, t: 0, u: 0, v: 0,
+    w: 0, x: 0, y: 0, z: 0, _: 0, "+": 0, "-": 0, "*": 0, "/": 0,
     "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ".": 0, ",": 0,
     ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
     " ": 0, "\t": 0, "\n": 0, "\r": 0,
@@ -1543,11 +1569,11 @@ export const transitionTable: Record<number, State> = {
     "6": 200, "7": 200, "8": 200, "9": 200, "+": 0, "-": 0, "*": 0, "/": 0,
     "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ".": 0, ",": 0,
     ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
-    " ": 202, "\t": 0, "\n": 0, "\r": 0,
+    " ": 2000, "\t": 0, "\n": 0, "\r": 0,
   },
 
-  // ESTADO 202: IDENTIFICADOR (terminal)
-  202: {    
+  // ESTADO 2000: IDENTIFICADOR (terminal)
+  2000: {
     a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0, h: 0, i: 0,
     j: 0, k: 0, l: 0, m: 0, n: 0, ñ: 0, o: 0, p: 0, q: 0,
     r: 0, s: 0, t: 0, u: 0, v: 0, w: 0, x: 0, y: 0, z: 0,
@@ -1555,8 +1581,8 @@ export const transitionTable: Record<number, State> = {
     "6": 0, "7": 0, "8": 0, "9": 0, "+": 0, "-": 0, "*": 0, "/": 0,
     "%": 0, "<": 0, ">": 0, "=": 0, "!": 0, "&": 0, "|": 0, ".": 0, ",": 0,
     ";": 0, ":": 0, "{": 0, "}": 0, "(": 0, ")": 0, "[": 0, "]": 0, '"': 0,
-    " ": 0, "\t": 0, "\n": 0,"\r": 0,
-  }, 
+    " ": 202, "\t": 0, "\n": 0, "\r": 0,
+  },
 
   // ESTADO 201: ERROR
   201: {
@@ -1585,21 +1611,19 @@ class Tokenizer {
     while (i < n) {
       const char = input[i];
 
-
-      if (char == "\n" || char == "\r") {
+      if ( char == "\r") {
         rowNumber++;
       };
 
-      const newState = transitionTable[currentState]![char as keyof State];      
-
+      const newState = transitionTable[currentState]![char as keyof State]
+      
       if (newState === 201 || newState === undefined) {       
-        console.log(newState);
         throw new Error(`Error léxico en la fila ${rowNumber}`);
       }
 
       lexeme += ![" ", "\t", "\n", "\r"].includes(char!) ? char : "";
 
-      if (tokenTable[newState]) {
+      if (tokenTable[newState] ) {
         tokens.push({
           token: tokenTable[newState].token,
           word: tokenTable[newState].word,
