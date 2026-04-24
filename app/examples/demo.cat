@@ -1,5 +1,5 @@
-let a=6;
+let a=6
 var a,b,c;
 float ab,bc,df;
-a=100;
+a=1;
 b=5+1;
