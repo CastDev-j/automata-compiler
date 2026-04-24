@@ -1,1 +1,5 @@
-let ejemplo,test,test,test;
+let a=6;
+var a,b,c;
+float ab,bc,df;
+a=100;
+b=5+1;
