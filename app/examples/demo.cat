@@ -1,7 +1,55 @@
-break case class const console default do enum for if interface let log of push return switch type var while 
-id _tmp item1 item_2 whilees 
-0 1 2 3 4 5 6 7 8 9 10 25 300 42.5 3.1416 
-+ - * / % < <= > >= = == === ! != !== & && | || ++ -- 
-. , ; : { } ( ) [ ] 
-"string simple" 
-"string con espacios y 123" 
+const a = 1;
+const b = 2;
+const c = 3;
+
+if (a === b) {
+  log("igual estricto");
+}
+
+if (a !== b) {
+  log("diferente estricto");
+}
+
+if (a == b) {
+  log("igual");
+}
+
+if (a != b) {
+  log("diferente");
+}
+
+if (a <= b) {
+  log("menor o igual");
+}
+
+if (a >= b) {
+  log("mayor o igual");
+}
+
+if (a < b) {
+  log("menor");
+}
+
+if (a > b) {
+  log("mayor");
+}
+
+if (a > 0 && b > 0) {
+  log("ambos positivos");
+}
+
+if (a > 0 || b > 0) {
+  log("alguno positivo");
+}
+
+if (!a) {
+  log("falsy");
+}
+
+const fn = (x: number) => x * 2;
+
+const flag = a & b;
+const flag2 = a | b;
+
+const obj = { key: a };
+const result = (a + b) * c;

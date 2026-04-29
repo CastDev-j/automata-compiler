@@ -1,3 +1,22 @@
+const tokens = [
+  "===", "!==",           
+  "<=", ">=", "!=", "==", "||", "&&",  
+  "(", ")", "{", "}", ";", "=", "!", "&", "|", "<", ">",  
+];
+
+const pattern = new RegExp(
+  tokens.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
+  "g"
+);
+
+export const formatDocument = (entry: string) => {
+  let text = (entry + "\r").replaceAll("\r", " \r");
+
+  text = text.replace(pattern, (match) => ` ${match} `);
+
+  return text;
+};
+
 export interface State {
   a?: number | undefined;
   b?: number | undefined;
