@@ -14,27 +14,36 @@ class Tokenizer {
     while (i < n) {
       const char = input[i];
 
-      if ( char == "\r") {
+      if (char == "\r") {
         rowNumber++;
-      };
+      }
 
-      const newState = transitionTable[currentState]![char as keyof State]
-      
-      if (newState === 201 || newState === undefined) {       
-        throw new Error(`Error léxico en la fila ${rowNumber}`);
+      const newState = transitionTable[currentState]![char as keyof State];
+
+      if (newState === 201 || newState === 202 || newState === undefined) {
+        const errorMessage =
+          (tokenTable[newState!] as { word: string })!.word ||
+          "Error desconocido";
+        const errorCode = newState ?? "No identificado";
+
+        throw new Error(
+          `Error léxico en la fila ${rowNumber}: ${errorMessage} (código: ${errorCode})`,
+        );
       }
 
       lexeme += ![" ", "\t", "\n", "\r"].includes(char!) ? char : "";
 
-      if (tokenTable[newState] ) {
-        const tokenEntries = Array.isArray(tokenTable[newState]) ? tokenTable[newState] : [tokenTable[newState]];
+      if (tokenTable[newState]) {
+        const tokenEntries = Array.isArray(tokenTable[newState])
+          ? tokenTable[newState]
+          : [tokenTable[newState]];
         tokens.push({
-          token: tokenEntries.map(entry => entry.token),
-          word: tokenEntries.map(entry => entry.word),
+          token: tokenEntries.map((entry) => entry.token),
+          word: tokenEntries.map((entry) => entry.word),
           value: lexeme,
         });
         currentState = 0;
-        lexeme = ""; 
+        lexeme = "";
       } else {
         currentState = newState;
       }
