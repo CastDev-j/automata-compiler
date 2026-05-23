@@ -105,6 +105,10 @@ export const tokenTable: Record<
     { token: 8000, word: "ID" },
     { token: 2050, word: "%" },
   ],
+  200011: [
+    { token: 8000, word: "ID" },
+    { token: 3010, word: "." },
+  ],
 
   1310: { token: 6000, word: "INT" },
   13101: [
