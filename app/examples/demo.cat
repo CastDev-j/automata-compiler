@@ -1,2 +1,55 @@
-console.log(10.5);
-prueba.test;
+const a = 1;
+const b = 2;
+const c = 3;
+
+if (a === b) {
+  log("igual estricto");
+}
+
+if (a !== b) {
+  log("diferente estricto");
+}
+
+if (a == b) {
+  log("igual");
+}
+
+if (a != b) {
+  log("diferente");
+}
+
+if (a <= b) {
+  log("menor o igual");
+}
+
+if (a >= b) {
+  log("mayor o igual");
+}
+
+if (a < b) {
+  log("menor");
+}
+
+if (a > b) {
+  log("mayor");
+}
+
+if (a > 0 && b > 0) {
+  log("ambos positivos");
+}
+
+if (a > 0 || b > 0) {
+  log("alguno positivo");
+}
+
+if (!a) {
+  log("falsy");
+}
+
+const fn = (x: number) => x * 2;
+
+const flag = a & b;
+const flag2 = a | b;
+
+const obj = { key: a };
+const result = (a + b) * c;
