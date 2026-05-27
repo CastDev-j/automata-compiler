@@ -3,6 +3,13 @@ import { tokenTable } from "./tokenTable";
 import { transitionTable } from "./transitionTable";
 
 class Tokenizer {
+  private idCounter = 8001;
+  private intCounter = 6001;
+  private floatCounter = 6011;
+  private idMap = new Map<string, number>();
+  private intMap = new Map<string, number>();
+  private floatMap = new Map<string, number>();
+
   public lexer(input: string) {
     let rowNumber = 1;
     let currentState = 0;
@@ -37,9 +44,34 @@ class Tokenizer {
         const tokenEntries = Array.isArray(tokenTable[newState])
           ? tokenTable[newState]
           : [tokenTable[newState]];
+        const isCombined = Array.isArray(tokenTable[newState]);
+        const mappedEntries = tokenEntries.map((entry) => {
+          if (entry.word === "ID") {
+            const name = isCombined ? lexeme.slice(0, -1) : lexeme;
+            if (!this.idMap.has(name)) {
+              this.idMap.set(name, this.idCounter++);
+            }
+            return { ...entry, token: this.idMap.get(name)! };
+          }
+          if (entry.word === "INT") {
+            const value = isCombined ? lexeme.slice(0, -1) : lexeme;
+            if (!this.intMap.has(value)) {
+              this.intMap.set(value, this.intCounter++);
+            }
+            return { ...entry, token: this.intMap.get(value)! };
+          }
+          if (entry.word === "FLOAT") {
+            const value = isCombined ? lexeme.slice(0, -1) : lexeme;
+            if (!this.floatMap.has(value)) {
+              this.floatMap.set(value, this.floatCounter++);
+            }
+            return { ...entry, token: this.floatMap.get(value)! };
+          }
+          return entry;
+        });
         tokens.push({
-          token: tokenEntries.map((entry) => entry.token),
-          word: tokenEntries.map((entry) => entry.word),
+          token: mappedEntries.map((entry) => entry.token),
+          word: mappedEntries.map((entry) => entry.word),
           value: lexeme,
         });
         currentState = 0;

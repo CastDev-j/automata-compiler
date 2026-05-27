@@ -1,0 +1,98 @@
+S=<programa>
+Vn = {
+  <programa>, <lista_sentencias>, <sentencia>, <declaracion>, <asignacion>,
+  <tipo_var>, <if_stmt>, <switch_stmt>, <case_list>, <case_stmt>, <default_stmt>,
+  <for_of_stmt>, <incremento_stmt>, <expr>, <expr_ternaria>, <expr_logica>,
+  <expr_bitwise>, <expr_rel>, <expr_arit>, <termino>, <factor_exp>, <factor>,
+  <expr_flecha>, <lista_params>, <param>, <tipo>, <id_o_miembro>, <acceso_miembro>,
+  <llamada_funcion>, <lista_expr>, <arreglo_literal>, <literal>, <op_rel>, <op_asig>
+}
+Vt = {
+  /* PALABRAS RESERVADAS */
+  const, let, var, if, switch, case, break, default, for, of, true, false,
+  any, number, string, boolean,
+  
+  /* OPERADORES */
+  =, +=, -=, *=, /=, %=, **=,
+  +, -, *, /, %, **,
+  ++, --,
+  ==, ===, !=, !==, >, <, >=, <=,
+  &&, ||, !, &, |, ?, :,
+  
+  /* SIGNOS Y PUNTUACIÓN */
+  ;, ,, ., (, ), {, }, [, ], =>,
+  
+  /* TOKENS DINÁMICOS */
+  ID, NUMERO, STRING_LIT
+}
+1  <programa> ::= <lista_sentencias>
+2  <lista_sentencias> ::= <sentencia>
+3  <lista_sentencias> ::= <sentencia> <lista_sentencias>
+4  <sentencia> ::= <declaracion>
+5  <sentencia> ::= <asignacion>
+6  <sentencia> ::= <if_stmt>
+7  <sentencia> ::= <switch_stmt>
+8  <sentencia> ::= <for_of_stmt>
+9  <sentencia> ::= <incremento_stmt> ;
+10 <sentencia> ::= <expr> ;
+11 <declaracion> ::= <tipo_var> ID = <expr> ;
+12 <declaracion> ::= <tipo_var> ID = <expr_flecha> ;
+13 <tipo_var> ::=  let | const | var
+14 <expr_flecha> ::= ( <lista_params> ) => <expr>
+15 <expr_flecha> ::= ( <lista_params> ) => { <lista_sentencias> }
+16 <lista_params> ::= λ
+17 <lista_params> ::= <param>
+18 <lista_params> ::= <param> , <lista_params>
+19 <param> ::= ID
+20 <param> ::= ID : <tipo>
+21 <tipo> ::= any | number | string | boolean
+22 <asignacion> ::= <id_o_miembro> <op_asig> <expr> ;
+23 <id_o_miembro> ::= ID | <acceso_miembro>
+24 <op_asig> ::= = | += | -= | *= | /= | %= | **=
+25 <incremento_stmt> ::= <id_o_miembro> ++ | ++ <id_o_miembro> | <id_o_miembro> -- | -- <id_o_miembro>
+26 <if_stmt> ::= if ( <expr> ) <sentencia>
+27 <for_of_stmt> ::= for ( const ID of ID ) { <lista_sentencias> }
+28 <switch_stmt> ::= switch ( <expr> ) { <case_list> <default_stmt> }
+29 <case_list> ::= <case_stmt>
+30 <case_list> ::= <case_stmt> <case_list>
+31 <case_stmt> ::= case <literal> : <lista_sentencias> break ;
+32 <case_stmt> ::= case <literal> : <lista_sentencias>
+33 <default_stmt> ::= default : <lista_sentencias>
+34 <default_stmt> ::= λ
+35 <expr> ::= <expr_ternaria>
+36 <expr_ternaria> ::= <expr_logica> ? <expr_logica> : <expr_logica>
+37 <expr_ternaria> ::= <expr_logica>
+38 <expr_logica> ::= <expr_bitwise>
+39 <expr_logica> ::= <expr_logica> && <expr_bitwise>
+40 <expr_logica> ::= <expr_logica> || <expr_bitwise>
+41 <expr_logica> ::= ! <expr_bitwise>
+42 <expr_bitwise> ::= <expr_rel>
+43 <expr_bitwise> ::= <expr_bitwise> & <expr_rel>
+44 <expr_bitwise> ::= <expr_bitwise> | <expr_rel>
+45 <expr_rel> ::= <expr_arit>
+46 <expr_rel> ::= <expr_arit> <op_rel> <expr_arit>
+47 <op_rel> ::= == | === | != | !== | > | < | >= | <=
+48 <expr_arit> ::= <termino>
+49 <expr_arit> ::= <expr_arit> + <termino>
+50 <expr_arit> ::= <expr_arit> - <termino>
+51 <termino> ::= <factor_exp>
+52 <termino> ::= <termino> * <factor_exp>
+53 <termino> ::= <termino> / <factor_exp>
+54 <termino> ::= <termino> % <factor_exp>
+55 <factor_exp> ::= <factor>
+56 <factor_exp> ::= <factor> ** <factor_exp>
+57 <factor> ::= ID
+58 <factor> ::= <literal>
+59 <factor> ::= ( <expr> )
+60 <factor> ::= <acceso_miembro>
+61 <factor> ::= <llamada_funcion>
+62 <factor> ::= <arreglo_literal>
+63 <acceso_miembro> ::= ID . ID
+64 <acceso_miembro> ::= <acceso_miembro> . ID
+65 <llamada_funcion> ::= ID ( <lista_expr> )
+66 <llamada_funcion> ::= <acceso_miembro> ( <lista_expr> )
+67 <lista_expr> ::= λ
+68 <lista_expr> ::= <expr>
+69 <lista_expr> ::= <expr> , <lista_expr>
+70 <arreglo_literal> ::= [ <lista_expr> ]
+71 <literal> ::= NUMERO | STRING_LIT | true | false

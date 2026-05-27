@@ -77,21 +77,21 @@ export const tokenTable: Record<
     { token: 8000, word: "ID" },
     { token: 2005, word: "=" },
   ],
-  20004: [
+   20004: [
     { token: 8000, word: "ID" },
-    { token: 3030, word: "+" },
+    { token: 2060, word: "+" },
   ],
-  20005: [
+   20005: [
     { token: 8000, word: "ID" },
-    { token: 3030, word: "-" },
+    { token: 2070, word: "-" },
   ],
-  20006: [
+   20006: [
     { token: 8000, word: "ID" },
-    { token: 3030, word: "*" },
+    { token: 2030, word: "*" },
   ],
-  20007: [
+   20007: [
     { token: 8000, word: "ID" },
-    { token: 3030, word: "/" },
+    { token: 2040, word: "/" },
   ],
   20008: [
     { token: 8000, word: "ID" },
@@ -115,23 +115,43 @@ export const tokenTable: Record<
     { token: 6000, word: "INT" },
     { token: 3030, word: ";" },
   ],
-  13102: [
+   13102: [
     { token: 6000, word: "INT" },
-    { token: 3030, word: "+" },
+    { token: 2060, word: "+" },
   ],
-  13103: [
+   13103: [
     { token: 6000, word: "INT" },
-    { token: 3030, word: "-" },
+    { token: 2070, word: "-" },
   ],
-  13104: [
+   13104: [
     { token: 6000, word: "INT" },
-    { token: 3030, word: "*" },
+    { token: 2030, word: "*" },
   ],
-  13105: [
+   13105: [
     { token: 6000, word: "INT" },
-    { token: 3030, word: "/" },
+    { token: 2040, word: "/" },
   ],
-  1320: { token: 6010, word: "FLOAT" },
+   1320: { token: 6010, word: "FLOAT" },
+   13201: [
+    { token: 6010, word: "FLOAT" },
+    { token: 3030, word: ";" },
+  ],
+   13202: [
+    { token: 6010, word: "FLOAT" },
+    { token: 2060, word: "+" },
+  ],
+   13203: [
+    { token: 6010, word: "FLOAT" },
+    { token: 2070, word: "-" },
+  ],
+   13204: [
+    { token: 6010, word: "FLOAT" },
+    { token: 2030, word: "*" },
+  ],
+   13205: [
+    { token: 6010, word: "FLOAT" },
+    { token: 2040, word: "/" },
+  ],
   134: { token: 7000, word: "STRING" },
 
   // Error
